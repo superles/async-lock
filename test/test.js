@@ -240,6 +240,18 @@ describe('AsyncLock Tests', function () {
 				done();
 			});
 	});
+	
+	it('Only one execution', function (done) {
+		var lock = new AsyncLock({ maxPending: 0 });
+		lock.acquire('key', function () {
+			return Q().delay(20); // jshint ignore:line
+		});
+
+		lock.acquire('key', function () { })
+			.catch(function (e) {
+				done();
+			});
+	});
 
 	it('use bluebird promise', function (done) {
 		var lock = new AsyncLock({ Promise: require('bluebird') });
